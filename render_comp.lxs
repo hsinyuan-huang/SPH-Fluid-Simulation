@@ -1,0 +1,46 @@
+Film "fleximage" "string filename" ["./water/water$"] "integer halttime" [130]
+
+#Sampler "metropolis" "integer maxconsecrejects" [4096]
+Sampler "lowdiscrepancy" "string pixelsampler" ["hilbert"] "integer pixelsamples" [32]
+#SurfaceIntegrator "path" "integer maxdepth" [32]
+SurfaceIntegrator "exphotonmap" "integer causticphotons" [200000] "integer indirectphotons" [1000000] "integer directphotons" [2000000] "integer radiancephotons" [1000000]
+
+LookAt 0 90 -95 0 80 -84 0 1 0
+Camera "perspective" "float fov" [45]
+
+WorldBegin
+AttributeBegin
+#LightSource "distant" "point from" [0 0 0] "point to" [0 -1 1]
+LightSource "point" "point from" [-40 80 -10] "float power" [10000]
+AttributeEnd
+
+AttributeBegin
+Material "matte" "color Kd" [.5 .5 .5]
+
+Texture "grid" "color" "imagemap" "string filename" ["textures/lines.exr"]
+Texture "sgrid" "color" "scale" "texture tex1" "grid" "color tex2" [ .5 .5 .5 ]
+
+Material "matte" "texture Kd" "sgrid"
+Shape "trianglemesh" "point P" [ -150 0 -150 150 0 -150 150 0 150 -150 0 150 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+AttributeEnd
+
+TransformBegin
+Material "metal"
+Shape "trianglemesh" "point P" [ -100 0 -100 -100 0 100 -100 200 100 -100 200 -100 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 100 0 -100 100 0 100 100 200 100 100 200 -100 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 100 0 100 -100 0 100 -100 200 100 100 200 100 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -100 200 -100 100 200 -100 100 200 100 -100 200 100 ]
+	"integer indices" [ 0 1 2 2 3 0]
+TransformEnd
+
+Translate -50 0 -15
+Material "glass" "float index" [1.33]
+#Material "metal" "string name" ["gold"]
+Include "luxrender$"
+
+WorldEnd
